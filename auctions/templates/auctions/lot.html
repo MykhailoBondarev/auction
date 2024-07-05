@@ -1,0 +1,133 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+{% if user.is_authenticated and lot.winner == user.id %}
+    <div id="winnerModal"  class="modal fade winner-bg" tabindex="-1" role="dialog" data-show="true" aria-labelledby="winnerModal" aria-hidden="true">
+        <div class="modal-dialog modal-sm" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Congratulations!</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-center">
+                <p>You are the winner!</p>
+            </div>        
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">WOW!</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}
+  <div class="container">
+        <div class="row">
+            <div class="col">
+                <h3 class="mt-5 text-center">{{ lot.name }}</h3>
+                <h6 class="text-right">Posted by {{lot.displayed_name}} at {{lot.create_date|date:"H:i" }} on {{lot.create_date|date:"d M Y"}}</h6>
+                               
+                {% if lot.photos and lot.photos|length > 1 %}
+                <div id="carouselItems" class="carousel slide" data-ride="carousel">               
+                        <ol class="carousel-indicators">
+                            {% for photo in lot.photos %}                                                
+                                <li data-target="#carouselItems" data-slide-to="{{ forloop.counter }}" class="{% if forloop.counter == 1 %}active{% endif %}"></li>
+                            {% endfor %}
+                        </ol>
+                        <div class="carousel-inner">
+                            {% for photo in lot.photos %}                 
+                                <div class="carousel-item {% if forloop.counter == 1 %}active{% endif %} text-center">
+                                    <img class="img-fluid" class="d-block w-100" src="{{base_url}}{{photo.photo.name}}" alt="slide{{ forloop.counter }}">
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <a class="carousel-control-prev" href="#carouselItems" role="button" data-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                        <a class="carousel-control-next" href="#carouselItems" role="button" data-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="sr-only">Next</span>
+                        </a>    
+                </div>
+                {% else %}
+                    {% for photo in lot.photos %}   
+                        <div class="text-center" >
+                            <img class="img-fluid" src="{{base_url}}{{photo.photo.name}}" alt="{{ lot.name }}">  
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                <p>{{ lot.description|safe }}</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col my-3">
+                    <div id="accordion">
+                        <div class="card">
+                            <div class="card-header" id="headingOne">
+                                <h5 class="mb-0 text-center">
+                                <button class="btn btn-link" data-toggle="collapse" data-target="#collapse" aria-expanded="true" aria-controls="collapseOne">
+                                    Current price: {{lot.initial_rate}} $
+                                </button>
+                                </h5>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="collapse" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+                        <div class="card-body">
+                            <div class="list-group">
+                                {% if not lot.bids %}
+                                    <div class="list-group-item list-group-item-action list-group-item-light">
+                                            There is no bid yet.
+                                    </div>
+                                {% endif %}
+                                {% for bid in lot.bids %}
+                                    <div class="list-group-item list-group-item-action list-group-item-secondary">
+                                        <div class="d-flex w-100 justify-content-between">
+                                            <h5 class="mb-1">{{bid.author.first_name}} {{bid.author.last_name}} ({{bid.author.username}}) gives {{bid.rate}} $</h5>
+                                            <small>{{bid.create_date|date:"d M Y H:i"}}</small>
+                                          </div>                                       
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                      </div>                                      
+                </div>
+        </div>
+        <div class="row">
+            <div class="col my-5">
+                {% if user.is_authenticated and lot.author_id == user.id %}
+                    {% include "auctions/lot-activate-layout.html" %}
+                {% endif %}
+                <div class="col-3 float-right"> 
+                    {% include "auctions/watchlist-add-btn-layout.html" %}
+                </div>                
+                {% if user.is_authenticated and lot.author_id != user.id and lot.active %}
+                    <form class="col-5" method="POST" action="{% url 'add-rate' %}">
+                        {% csrf_token %}
+                        {{rate_form}}                           
+                        <input class="btn btn-outline-danger" type="submit" value="Make a bid">
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                {% if user.is_authenticated %}
+                    <form id="comment-form" action="{% url 'add-comment' %}" method="post">
+                        {% csrf_token %}
+                        {{comment_form}}
+                        <input class="mt-3 btn btn-outline-warning"  type="submit" value="Post a comment">
+                    </form>
+                {% else %}
+                    <div class="list-group-item list-group-item-action list-group-item-light text-center">
+                       Please <a href="{% url 'login' %}">login</a> to comment
+                    </div>                
+                {% endif %}
+                <div class="comments-container">
+                    {% include "auctions/comments-layout.html" %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

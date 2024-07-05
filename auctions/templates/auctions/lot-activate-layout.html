@@ -1,0 +1,10 @@
+<form class="p-2" action="{% url 'lot-activate' %}" method="post">
+    {% csrf_token %}
+    <input type="hidden" name="lot-id" value="{{lot.id}}">
+    <input type="hidden" name="lot-state" value="{{lot.active}}">
+    {% if lot.active %}
+        <input class="btn btn-outline-danger"  type="submit" value="Deactivate">
+    {% else %}  
+        <input class="btn btn-outline-success"  type="submit" value="Activate">
+    {% endif %}                    
+</form>

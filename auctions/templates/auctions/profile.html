@@ -1,0 +1,20 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+  <div class="container">
+        <div class="row">
+            <div class="col mt-5 text-center">
+                <!-- d-flex flex-column -->
+                <h6 class="my-3">Login: {{user.username}}</h6>
+                <div class="mx-auto mb-3 icon-100x100">
+                    <img class="user-icon" src="{{base_url}}{{user.icon}}" alt="{{user.username}}"> 
+                </div>                               
+                <form class="col-md-4 offset-md-4 col-sm-12" action="{% url 'profile' %}" method="post"  enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{user_form}}                   
+                    <input class="btn btn-outline-success" type="submit" value="Update info">    
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

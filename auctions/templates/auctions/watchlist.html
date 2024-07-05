@@ -1,0 +1,52 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+  <div class="container">
+        <div class="row">
+            <div class="col my-5"><h2 class="text-center font-effect-neon">My watchlist</h2>
+                {% if not watchlist %}
+                    <h4 class="my-5 text-center">Your list is empty</h4>
+                {% endif %}
+                <ul class="mt-5 list-group list-group-flush">
+                    {% for item in watchlist %}
+                        {% if item.lot.winner == user.id %}
+                            <li class="list-group-item  list-group-item-success">
+                                <a class="d-flex" href="{% url 'lot' item.lot_id %}">
+                                    <div class="lot-pic-small mr-3"><img src="{{base_url}}{{item.lot.picture}}" alt="{{item.lot.name}}"></div>
+                                    <div class="align-self-center">{{item.lot.name}}</div>
+                                </a>                                
+                            </li>
+                        {% elif not item.lot.active and item.lot.winner != user.id %}                       
+                            <li class="list-group-item list-group-item-light">
+                                <div class="d-flex">
+                                    <div class="lot-pic-small mr-3"><img src="{{base_url}}{{item.lot.picture}}" alt="{{item.lot.name}}"></div>
+                                    <div class="align-self-center">{{item.lot.name}}</div>
+                                </div>                                
+                            </li>                            
+                        {% else %}
+                            <li class="list-group-item list-group-item-secondary">
+                                <div class="d-flex">                                
+                                    <a class="p-2 flex-grow-1 d-flex" href="{% url 'lot' item.lot_id %}">
+                                        <div class="lot-pic-small mr-3"><img src="{{base_url}}{{item.lot.picture}}" alt="{{item.lot.name}}"></div>
+                                        <div class="align-self-center">{{item.lot.name}}</div>
+                                    </a>
+                                    <div class="p-2 align-self-center">
+                                        <form class="float-right" title="Remove from watchlist" method="post" action="{% url 'change-watchlist' item.lot_id %}"> 
+                                            {% csrf_token %}
+                                            <input type="hidden" name="parent_page" value="{{ request.path }}">
+                                            <button class="watchlist-btn" type="submit">
+                                                <span class="material-icons">
+                                                    highlight_off
+                                                </span> 
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>                             
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,20 @@
+<div class="card m-2 mx-auto d-flex flex-column" style="width: 12rem;">
+    <a href="{% url 'lot' lot.id %}">
+        <img class="card-img-top" src="{{base_url}}{{lot.picture}}" alt="Card image cap">
+    </a>
+    <div class="card-body">
+        <h5 class="card-title">{{ lot.name|truncatechars_html:30 }}</h5>
+        <h5 class="mb-3">for {{ lot.initial_rate }} $</h5>
+        <div class="card-footer2"> 
+            {% if lot.comments_count %}
+                <div class="float-right" title="comments">                            
+                    <span class="material-icons">
+                        question_answer 
+                    </span>
+                <b>{{lot.comments_count}}</b>                            
+                </div>
+            {% endif %}
+            {% include "auctions/watchlist-add-btn-layout.html" %}
+        </div>
+    </div>
+</div> 

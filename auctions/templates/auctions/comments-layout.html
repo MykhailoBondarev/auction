@@ -1,0 +1,40 @@
+{% if not lot.comments %}
+<div class="list-group-item list-group-item-action list-group-item-light">
+    No comments available
+</div>                    
+{% endif %}
+{% for comment in lot.comments %}
+<div id="comment-{{comment.id}}" class="pt-4 comment-item list-group-item list-group-item-secondary">
+    <div class="comment-userinfo d-flex w-100 justify-content-start">
+        <img src="{{base_url}}{{comment.author.icon}}" class="mr-3" alt="{{comment.author.username}}">        
+        <h5 class="comment-username d-flex align-self-center">
+            <span id="username-{{comment.id}}">{{comment.displayed_name}}</span>            
+            {% if lot.author_id == comment.author.id %}
+            <small class="comment-author-mark ml-1">Author</small>
+            {% endif %}
+            {% if comment.reply_to %}
+            <a class="replied-mark fsmall" href="#comment-{{comment.reply_to}}">
+                <span class="material-icons">
+                    reply
+                </span>
+                replied to <span comment-name="username-{{comment.reply_to}}"></span>
+            </a>
+            {% endif %}
+        </h5>
+    </div>    
+    <small class="float-right">
+        {{comment.create_date | timesince}}
+    </small>
+    <p class="comment-body">{{comment.comment}}</p>
+    {% if comment.author.id != user.id %}
+        <p class="text-center">
+            <a class="reply-to" href="#{{comment.id}}">
+                <span class="material-icons fsmall">
+                    message
+                </span>
+               <span>Reply</span> 
+            </a>
+        </p>
+    {% endif %}    
+</div>
+{% endfor %}

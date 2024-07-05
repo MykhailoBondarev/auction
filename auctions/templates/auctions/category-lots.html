@@ -1,0 +1,12 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+<div class="container">
+    <div class="row">
+        <div class="col my-5"><h2 class="text-center font-effect-neon">{{ category.name }} category</h2></div>
+    </div>
+    <div class="row">
+        {% include "auctions/lotlist-layout.html" %}
+    </div>
+</div>
+{% endblock %}

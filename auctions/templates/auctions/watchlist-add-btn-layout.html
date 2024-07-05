@@ -1,0 +1,21 @@
+{% if user.is_authenticated and lot.author_id != user.id %}
+    {%if lot.id in request.session.watchlist %}
+                <form class="float-right" title="Remove from watchlist" method="post" action="{% url 'change-watchlist' lot.id %}"> 
+                    {% csrf_token %}
+                    <input type="hidden" name="parent_page" value="{{ request.path }}">
+                    <button class="watchlist-btn" type="submit">
+                        <span class="watchlist-text">Remove from watchlist</span>
+                        <span class="material-icons">favorite</span>
+                    </button> 
+                </form>
+    {% else %}
+                <form class="float-right" title="Add to watchlist" method="post" action="{% url 'change-watchlist' lot.id %}"> 
+                    {% csrf_token %}
+                    <input type="hidden" name="parent_page" value="{{ request.path }}">
+                    <button class="watchlist-btn" type="submit">
+                        <span class="watchlist-text">Add to watchlist</span>
+                        <span class="material-icons">favorite_border</span>
+                    </button> 
+                </form>
+    {% endif %}
+{% endif %} 

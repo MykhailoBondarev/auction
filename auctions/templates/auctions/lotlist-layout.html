@@ -1,0 +1,9 @@
+
+{% if not lots %}
+<div class="card m-2 mx-auto d-flex flex-column">
+  <p class="text-center">There is no active auctions yet</p>
+</div>          
+{% endif %}
+{% for lot in lots %}
+    {% include "auctions/lot-layout.html" %}   
+{% endfor %}

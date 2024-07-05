@@ -1,0 +1,40 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+  <div class="container">
+    <h2 class="text-center">My auctions</h2>
+      <div class="row">
+        {% if not lots %}
+        <div class="m-2 mx-auto d-flex flex-column">
+          <p class="text-center">You have no auctions yet</p>
+          <a href="{% url 'new-auction' %}">Create one?</a>
+        </div>          
+        {% endif %}
+        {% for lot in lots %}        
+          <div class="card m-2 mx-auto d-flex flex-column" style="width: 15rem;">
+              <a href="{% url 'lot' lot.id %}">
+                <img class="card-img-top" src="{{base_url}}{{lot.picture}}" alt="Card image cap">
+              </a>
+              <div class="card-body">
+                <div class="d-flex">  
+                  {% include "auctions/lot-activate-layout.html" %}
+                  <form class="p-2" action="{% url 'lot-activate' %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="lot-id" value="{{lot.id}}">
+                    <button class="btn btn-outline-success"  type="submit">
+                      <div class="float-right" title="Edit lot {{ lot.name }}">                            
+                          <span class="material-icons">
+                              edit_note 
+                          </span>
+                        </div>                      
+                    </button>
+                  </form>
+                </div>
+                <h5 class="card-title">{{ lot.name }} for {{ lot.initial_rate }} $</h5>
+                <p class="card-text">{{lot.description | truncatechars_html:64 | safe }}</p>
+              </div>
+            </div> 
+          {% endfor %}
+      </div>
+  </div>   
+{% endblock %}

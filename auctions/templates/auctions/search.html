@@ -1,0 +1,25 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+  <div class="container">
+        <div class="row">
+            <div class="col mt-5 text-center">
+                <h3 class="my-5">Search results:</h3>
+                {% if not lots %}
+                    <p class="text-center">There is no results about <strong>"{{query}}"</strong></p>
+                {% else %}
+                    <div class="d-flex flex-column">
+                        {% for category in categories %}
+                            <h4 class="text-center p2">{{ category }}</h4>
+                            {% for lot in lots %}
+                                {% if lot.category.name == category %}                                                 
+                                    {% include "auctions/lot-layout.html" %}
+                                {% endif %}                                              
+                            {% endfor %}
+                        {% endfor%}
+                    </div>  
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
